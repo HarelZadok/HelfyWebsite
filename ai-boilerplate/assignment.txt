@@ -1,0 +1,66 @@
+Advanced Full Stack Assignment:
+AI-Driven Software Engineering
+This assignment evaluates your ability to leverage Generative AI as a "Force Multiplier." We
+aren't just looking for someone who can write code; we are looking for an engineer who can
+build the foundation layer that enables AI to generate a production-grade application that
+should be maintained by various teams.
+The Objective
+You must develop a comprehensive "AI Blueprint" (consisting of system design definitions for AI
+driven development, and an initial prompt) that, when executed, generates a fully functional,
+high-quality eCommerce platform.
+Core Technology Stack
+● Frontend: React.js (with beautiful, modern UI/UX)
+● Backend: Node.js (Express)
+● Database: MySQL
+● Design: Any modern styling library is allowed (Tailwind CSS, Framer Motion, etc.), but it
+must be visually "premium."
+Required eCommerce Features
+● Authentication: Full Login/Sign-up flow with JWT or Session management.
+● Product Catalog: Search, filter, and detailed product views.
+● Cart & Checkout: Persistent cart and a multi-step checkout process.
+● Account Section: Order history and profile management.
+Deployment & Runtime Requirement
+The entire project — frontend, backend, and MySQL database - must run with a single
+command:
+docker compose up
+No manual steps (installing dependencies, running migrations, seeding data, or configuring
+environment variables beyond a provided .env.example) should be required between cloning the
+repository and accessing a fully working application in the browser.
+The AI Orchestration Requirements
+Your task is to submit the "Engine" you built to create this site. You must define:
+1. Engineering Guidelines & Constraints
+Define the conventions the AI should consistently follow across the project. This includes
+decisions such as language preferences (e.g., TypeScript), architectural patterns, folder
+structure, naming conventions, error handling strategies, and coding standards.
+2. Capability Definitions
+Describe the functional building blocks and domains the AI can leverage while generating
+the application. This may include reusable modules, integration patterns, authentication
+strategies, data access layers, and UI composition approaches.
+3. initial.md (Bootstrap Prompt)
+The primary instruction set that initiates the project generation. This should establish the
+architecture, define the stack, and guide the AI through building the core features of the
+system end-to-end.
+Submission Structure
+Your Git repository must be organized as follows:
+Component Requirement
+1. Resulted Code The final, working codebase in its completed
+state.
+2. AI Boilerplate The initial.md file and all AI guideline files
+used to generate the project.
+3. README.md Documentation of manual interventions.
+Specify exactly what you had to fix by hand
+and why the AI failed to handle it.
+4. AI interactions Documentation Documentation of all the Prompts, queries (
+also search queries in google, chatgpt
+questions ... ), planning and architecture
+inquiries you used for this projects.
+Also document the Models you used in
+which step and why you used those model.
+Write all the plugins and tools you used
+Evaluation Criteria
+● Prompt Engineering Rigor: How "zero-touch" is your generation process?
+● Architectural Integrity: Does the AI-generated code follow best practices?
+● Critical Thinking: Your ability to identify the "AI-Gap" (where human intervention is more
+efficient than prompt tuning).
+● Design Aesthetic: The visual quality of the resulting React frontend.
+Show us how you lead the machine, rather than just how you follow it. Good luck!

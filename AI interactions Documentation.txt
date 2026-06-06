@@ -1,0 +1,332 @@
+================================================================================
+  AI INTERACTIONS DOCUMENTATION — LUMINA eCOMMERCE PLATFORM
+  Full-Stack Assignment: AI-Driven Software Engineering
+================================================================================
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. PROJECT OVERVIEW
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Objective  : Build a production-grade eCommerce platform using AI as a force
+             multiplier — from architecture through deployment.
+Stack      : React 18 + TypeScript (Vite) / Node.js 20 + Express / MySQL 8.0
+Styling    : Tailwind CSS + Framer Motion
+Container  : Docker Compose (single-command launch)
+Total Scope: ~8 feature modules, 15+ pages/components, full auth, cart, orders.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2. TOOLS & PLUGINS USED
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+AI Development Environment
+  - Windsurf IDE (Codeium)         — Primary AI-assisted coding environment
+  - Cascade (Windsurf AI Agent)    — Agentic code generation, file editing,
+                                     terminal execution, and multi-file refactoring
+  - Fast Context (Windsurf tool)   — Parallel codebase search subagent
+
+AI Models Used
+  - Claude Sonnet 4 (Anthropic)    — Primary model for all architecture, code
+                                     generation, and debugging sessions
+                                     (used throughout entire project via Cascade)
+
+External Tools & Research
+  - Docker Desktop                 — Container management and log inspection
+  - MySQL Workbench (reference)    — Schema validation reference
+  - Unsplash (unsplash.com)        — Product image URL sourcing for seed data
+
+VS Code / Windsurf Extensions
+  - ESLint                         — Linting enforcement
+  - Prettier                       — Code formatting
+  - TypeScript Language Server     — Type-checking and IntelliSense
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+3. AI BLUEPRINT (PRE-GENERATION ARTIFACTS)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Three structured documents were authored before any code generation began.
+These constrained the AI's output and ensured architectural consistency.
+
+3.1 Engineering Guidelines (ai-blueprint/engineering-guidelines.md)
+    Purpose  : Define non-negotiable coding standards the AI must follow.
+    Key Rules:
+      - TypeScript strict mode everywhere; no plain .js except config files
+      - Layered backend: routes → controllers → services → db pool
+      - No ORM; raw parameterized SQL (mysql2/promise) only
+      - JWT: 15-min access token in memory, 7-day refresh in httpOnly cookie
+      - Error handling via typed AppError + centralized errorHandler middleware
+      - Standard API envelope: { success, data, meta }
+      - Conventional commits; .env gitignored, .env.example committed
+
+3.2 Capability Definitions (ai-blueprint/capability-definitions.md)
+    Purpose  : Describe the 9 functional building blocks the AI could compose.
+    Modules Defined:
+      1. Authentication   — JWT pair, refresh rotation, AuthContext, RequireAuth
+      2. Product Catalog  — paginated list, filters, search, detail view
+      3. Cart             — persistent server-side cart, CartContext, CartDrawer
+      4. Checkout         — multi-step flow, address form, mock payment, confirmation
+      5. Order Management — order history list + detail view with status badges
+      6. User Profile     — editable name, change password
+      7. UI Primitives    — Button, Badge, Spinner, Skeleton, Modal, Pagination
+      8. Data Access      — pool.ts pattern, query pattern, transaction pattern
+      9. Environment Cfg  — config.ts typed constants, never direct process.env
+
+3.3 Bootstrap Prompt (ai-blueprint/initial.md)
+    Purpose  : Primary instruction set to initiate full project generation.
+    Contents :
+      - Full folder structure specification for frontend and backend
+      - Complete MySQL DDL requirements (8 tables with constraints)
+      - Seed data requirements: 20+ products with Unsplash images, 4 categories
+      - All API route definitions with method, path, auth, request/response shape
+      - Frontend page list with routing and lazy-loading requirements
+      - Docker Compose specification for db + backend + frontend services
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+4. PROMPT LOG — PLANNING & ARCHITECTURE PHASE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Model Used: Claude Sonnet 4 via Cascade (Windsurf)
+Why: Best-in-class instruction-following for multi-file agentic tasks; strong
+     TypeScript and Express reasoning; handles long context well.
+
+P-01 | Architecture Planning
+  Query : "Design a layered Node.js/Express + MySQL architecture for an eCommerce
+           platform. No ORM. JWT auth with refresh tokens. What folder structure
+           and patterns should the AI follow?"
+  Output: Produced engineering-guidelines.md and capability-definitions.md
+  Result: Used directly as ai-blueprint constraints.
+
+P-02 | Schema Design
+  Query : "Generate complete MySQL DDL for: categories, products (with JSON images
+           column), users, refresh_tokens, carts, cart_items, orders, order_items.
+           Use IF NOT EXISTS, foreign keys, appropriate ENUMs and indexes."
+  Output: backend/db/schema.sql (8 tables, full constraints)
+
+P-03 | Seed Data Generation
+  Query : "Generate seed data for 20+ realistic tech/lifestyle products across
+           4 categories. Each product needs a JSON array of 3 Unsplash image URLs,
+           realistic pricing with some sale items, at least 6 featured products."
+  Output: backend/db/seed.sql (22 products, 4 categories)
+
+P-04 | Backend Scaffolding
+  Query : "Scaffold a complete Express + TypeScript backend: app.ts, index.ts,
+           config.ts, db/pool.ts, asyncHandler, AppError, errorHandler middleware,
+           authenticate middleware. Apply helmet, cors, cookie-parser, express-json."
+  Output: Full backend src/ directory generated
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+5. PROMPT LOG — FEATURE IMPLEMENTATION PHASE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+P-05 | Auth Module
+  Query : "Implement authService (register, login, logout, refresh, me) and
+           authController using Zod validation. JWT pair generation, bcrypt hashing,
+           refresh token stored in DB and httpOnly cookie."
+  Output: authService.ts, authController.ts, authRoutes.ts
+
+P-06 | Product & Cart Modules
+  Query : "Implement productService with paginated filtered query (search, category,
+           price range, sort, featured). Implement cartService: get cart with line
+           totals, add/update/remove items. Both with full TypeScript types."
+  Output: productService.ts, cartService.ts, respective controllers and routes
+
+P-07 | Order Module
+  Query : "Implement orderService.placeOrder as a transaction: validate stock,
+           compute subtotal + shipping (free over $100), insert order + items,
+           decrement stock, clear cart. Return full order. Also implement getOrders
+           (paginated) and getOrderById."
+  Output: orderService.ts, orderController.ts, orderRoutes.ts
+
+P-08 | Frontend Foundation
+  Query : "Scaffold React 18 + Vite + TypeScript frontend: api/client.ts with Axios
+           instance, JWT interceptor with refresh queue logic, AuthContext, CartContext,
+           Navbar with cart drawer, Footer, App.tsx with lazy-loaded routes and
+           RequireAuth wrapper."
+  Output: Full frontend src/ foundation
+
+P-09 | UI Primitive Components
+  Query : "Create reusable UI components: Button (variants + loading state), Badge
+           (status variants), Spinner, Skeleton (shimmer), StarRating, QuantityStepper,
+           EmptyState (with optional action link), OrderSummaryCard (rows + total + slot
+           for children), ProductCardSkeleton."
+  Output: 9 components in frontend/src/components/ui/
+
+P-10 | Frontend Pages — Product Catalog
+  Query : "Build HomePage (hero + featured products grid + categories), ProductsPage
+           (filter sidebar + paginated grid + URL-synced state), ProductDetailPage
+           (image gallery, quantity stepper, add to cart, rating display)."
+  Output: 3 pages with full loading/error states
+
+P-11 | Frontend Pages — Auth & Cart
+  Query : "Build LoginPage and RegisterPage with form validation, react-hot-toast
+           errors, and redirect-if-authenticated guard. Build CartPage with
+           QuantityStepper, OrderSummaryCard, and checkout CTA. Build CartDrawer
+           slide-in panel with Framer Motion."
+  Output: LoginPage.tsx, RegisterPage.tsx, CartPage.tsx, CartDrawer.tsx
+
+P-12 | Frontend Pages — Checkout
+  Query : "Build CheckoutPage: shipping address form (street, city, state,
+           postalCode, country), mock payment step, order placement via API,
+           success confirmation with order ID and cart clear."
+  Output: CheckoutPage.tsx
+
+P-13 | Frontend Pages — Account Section
+  Query : "Build AccountLayout with sidebar nav (Profile, Orders links).
+           AccountProfilePage: edit name/phone, change password form. 
+           AccountOrdersPage: paginated order list with status badges.
+           AccountOrderDetailPage: items, shipping address, order summary."
+  Output: 4 account pages + AccountLayout
+
+P-14 | Docker & Infrastructure
+  Query : "Create docker-compose.yml orchestrating MySQL 8, backend (Node), and
+           frontend (Vite dev) services. MySQL healthcheck, depends_on, volume for
+           persistence, .env.example with all required variables."
+  Output: docker-compose.yml, frontend/Dockerfile, .env.example
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+6. PROMPT LOG — DEBUGGING & REFINEMENT PHASE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+D-01 | Type Mismatch: IAddress & IOrderItem
+  Issue  : Frontend used street/postalCode; backend used fullName/line1/zip.
+           IOrderItem used name/imageUrl; DB columns were productName/productImageUrl.
+  Fix    : Updated both backend and frontend types/index.ts to align. Updated
+           SQL queries to alias columns (productName AS name). Updated Zod schema
+           in orderController to match new IAddress shape.
+
+D-02 | MySQL caching_sha2_password Blocking Local Connections
+  Issue  : Backend (running on host) could not authenticate against MySQL 8.0
+           in Docker. Error: ER_ACCESS_DENIED_ERROR for lumina@172.18.0.1.
+           MySQL 8 defaults to caching_sha2_password which requires SSL or
+           RSA key exchange not supported by the mysql2 driver in this context.
+  Fix    : ALTER USER 'lumina'@'%' IDENTIFIED WITH mysql_native_password BY ...
+  Query  : "Why does mysql2 get access denied with MySQL 8.0 Docker container
+           even with correct credentials and wildcard host?"
+
+D-03 | Schema DB Name Mismatch
+  Issue  : schema.sql used CREATE DATABASE lumina_store; compose created lumina.
+  Fix    : Replaced all lumina_store references with lumina in schema.sql and seed.sql.
+           Applied schema manually via PowerShell pipe: Get-Content ... | docker exec -i
+
+D-04 | imageUrl Field Removal
+  Issue  : Products and cart items had a redundant imageUrl field alongside the
+           images JSON array. Caused type inconsistency and unnecessary DB column.
+  Fix    : Removed imageUrl from schema, seed, types (frontend + backend), services,
+           and components. Updated all usages to images[0] for thumbnail display.
+
+D-05 | LIMIT Clause with mysql2 Parameterized Queries
+  Issue  : mysql2 does not support LIMIT/OFFSET as parameterized ? placeholders
+           when using pool.execute() — values were being cast to strings.
+  Fix    : Interpolated safeLimit and offset directly into the SQL string after
+           clamping/validating them as integers (Math.floor + bounds check).
+
+D-06 | Register Error Message Swallowed
+  Issue  : RegisterPage catch block showed hardcoded string for all failure types,
+           hiding the real backend error (e.g., network error vs. 409 conflict).
+  Fix    : Changed catch(err: unknown) to extract err.response.data.message with
+           fallback. Applied same fix to LoginPage.tsx.
+
+D-07 | Auth Redirect Loop on Register/Login Pages
+  Issue  : Authenticated users could navigate to /login and /register, causing
+           confusing UX.
+  Fix    : Added RedirectIfAuth wrapper component in App.tsx — redirects to
+           /products if already authenticated.
+
+D-08 | Axios Interceptor Redirect on Auth Pages
+  Issue  : Token refresh failure in client.ts triggered window.location.href='/login'
+           even when already on /login or /register, causing reload loops.
+  Fix    : Added pathname check before redirect in the refresh error handler.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+7. MODELS USED — BY PHASE & RATIONALE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Model              Phase                      Rationale
+─────────────────  ─────────────────────────  ────────────────────────────────
+Claude Sonnet 4    Architecture & Blueprint   Superior long-context reasoning;
+                                              strong at producing structured
+                                              constraint documents and schemas.
+
+Claude Sonnet 4    Full Backend Generation    Best instruction-following for
+                                              layered TypeScript + SQL patterns;
+                                              consistent with engineering rules.
+
+Claude Sonnet 4    Frontend Scaffolding       Reliable React + Tailwind output;
+                                              handles component composition and
+                                              context/hook patterns correctly.
+
+Claude Sonnet 4    Debugging & Refinement     Accurate root-cause identification
+                                              for TypeScript errors, MySQL auth
+                                              issues, and Axios interceptor logic.
+
+Note: A single model (Claude Sonnet 4) was used throughout all phases via the
+Windsurf Cascade agent. Model consistency was intentional — switching models
+mid-project introduces stylistic drift and contradicts established patterns.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+8. HUMAN INTERVENTIONS (AI-GAP ANALYSIS)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+The following required direct human judgment, not prompt tuning:
+
+1. MySQL Auth Plugin Decision
+   The AI could not diagnose or resolve the caching_sha2_password issue
+   autonomously — it required knowing that mysql2 + Docker MySQL 8 requires
+   mysql_native_password for non-SSL host connections. This is a runtime
+   environment-specific issue outside the AI's training scope for this config.
+
+2. PowerShell Pipe Syntax for Schema Import
+   The AI attempted bash-style `<` redirect which PowerShell doesn't support.
+   Human intervention was needed to use Get-Content ... | docker exec -i syntax.
+
+3. Schema/Seed DB Name Correction
+   The AI-generated schema used lumina_store but Docker Compose created lumina.
+   Human identified the mismatch by reading both files and corrected all references.
+
+4. imageUrl Architectural Decision
+   The decision to remove the redundant imageUrl column (keeping only images[])
+   was a product design decision. The AI executed the refactor once directed.
+
+5. Vite Proxy Target for Docker
+   Changing the Vite proxy target from localhost:4000 to backend:4000 for
+   Docker networking was a human-initiated config change requiring Docker
+   networking knowledge.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+9. KEY ARCHITECTURAL DECISIONS MADE DURING INTERACTION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Decision                        Rationale
+──────────────────────────────  ───────────────────────────────────────────────
+No ORM (raw mysql2 SQL)         Assignment requirement; full control over query
+                                shape; no abstraction leakage into types.
+
+Access token in memory only     Prevents XSS token theft; refresh via httpOnly
+                                cookie is the industry standard pattern.
+
+Single cart per user (server)   Simplifies sync; avoids client-side persistence
+                                issues across devices.
+
+Free shipping threshold $100    Business rule baked into orderService; easy to
+                                surface in UI without config overhead.
+
+mysql_native_password plugin    Required for mysql2 driver compatibility with
+                                MySQL 8.0 in Docker without SSL.
+
+Inline LIMIT in SQL string      mysql2 parameterized queries cast LIMIT values
+                                to strings; inline integers (post-validation)
+                                is the correct workaround.
+
+images[] replaces imageUrl      Single source of truth for product images;
+                                first element used as thumbnail everywhere.
+
+orderStatus utility module      Centralized status → badge variant mapping to
+                                avoid duplicated logic across 2+ pages.
