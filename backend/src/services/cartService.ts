@@ -27,7 +27,8 @@ export const getCart = async (userId: number): Promise<ICart> => {
        p.name,
        p.price,
        ci.quantity,
-       (p.price * ci.quantity) AS lineTotal
+       (p.price * ci.quantity) AS lineTotal,
+       JSON_UNQUOTE(JSON_EXTRACT(p.images, '$[0]')) AS image
      FROM cart_items ci
      JOIN products p ON ci.productId = p.id
      WHERE ci.cartId = ?`,
@@ -37,6 +38,7 @@ export const getCart = async (userId: number): Promise<ICart> => {
   const cartItems = items.map((row) => ({
     productId: row.productId as number,
     name: row.name as string,
+    image: (row.image as string | null) ?? null,
     price: parseFloat(row.price as string),
     quantity: row.quantity as number,
     lineTotal: parseFloat(row.lineTotal as string),

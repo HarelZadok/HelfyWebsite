@@ -64,11 +64,20 @@ const AccountOrdersPage: React.FC = () => {
             <div className="flex -space-x-2">
               {order.items.slice(0, 4).map((item, idx) => (
                 <div
-                  key={item.productId}
-                  className="w-9 h-9 rounded-lg bg-gray-100 dark:bg-gray-800 border-2 border-white dark:border-gray-900 flex items-center justify-center text-gray-400 text-xs font-medium"
+                  key={item.id}
+                  className="w-9 h-9 rounded-lg bg-gray-100 dark:bg-gray-800 border-2 border-white dark:border-gray-900 overflow-hidden flex items-center justify-center text-gray-400 text-xs font-medium"
                   style={{ zIndex: 4 - idx }}
                 >
-                  {item.name.charAt(0)}
+                  {item.image ? (
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                  ) : (
+                    item.name.charAt(0)
+                  )}
                 </div>
               ))}
             </div>

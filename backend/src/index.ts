@@ -1,6 +1,7 @@
 import app from './app';
 import { config } from './config';
 import { pool } from './db/pool';
+import { initializeDatabase } from './db/init';
 
 const MAX_RETRIES = 10;
 const RETRY_DELAY_MS = 3000;
@@ -24,6 +25,7 @@ const connectWithRetry = async (retries = 0): Promise<void> => {
 const start = async (): Promise<void> => {
   try {
     await connectWithRetry();
+    await initializeDatabase();
 
     app.listen(config.PORT, () => {
       console.log(`🚀 Server running on port ${config.PORT}`);

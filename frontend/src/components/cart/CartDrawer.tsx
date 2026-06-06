@@ -73,7 +73,13 @@ const CartDrawer: React.FC = () => {
                   {cart.items.map((item) => (
                     <div key={item.productId} className="flex gap-4">
                       <Link to={`/products/${item.productId}`} onClick={closeCart} className="flex-shrink-0">
-                        <div className="w-16 h-16 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-400 text-xs font-medium">{item.name.charAt(0)}</div>
+                        <div className="w-16 h-16 rounded-lg bg-gray-100 dark:bg-gray-800 overflow-hidden flex items-center justify-center text-gray-400 text-xs font-medium">
+                          {item.image ? (
+                            <img src={item.image} alt={item.name} className="w-full h-full object-cover" loading="lazy" />
+                          ) : (
+                            item.name.charAt(0)
+                          )}
+                        </div>
                       </Link>
                       <div className="flex-1 min-w-0">
                         <Link to={`/products/${item.productId}`} onClick={closeCart}>

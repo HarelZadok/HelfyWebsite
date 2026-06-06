@@ -38,7 +38,13 @@ const CartPage: React.FC = () => {
           {cart.items.map((item) => (
             <div key={item.productId} className="flex gap-5 bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-4">
               <Link to={`/products/${item.productId}`} className="flex-shrink-0">
-                <div className="w-20 h-20 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-400 text-sm font-medium">{item.name.charAt(0)}</div>
+                <div className="w-20 h-20 rounded-xl bg-gray-100 dark:bg-gray-800 overflow-hidden flex items-center justify-center text-gray-400 text-sm font-medium">
+                  {item.image ? (
+                    <img src={item.image} alt={item.name} className="w-full h-full object-cover" loading="lazy" />
+                  ) : (
+                    item.name.charAt(0)
+                  )}
+                </div>
               </Link>
               <div className="flex-1 min-w-0">
                 <Link to={`/products/${item.productId}`}>

@@ -117,10 +117,13 @@ export const getOrders = async (
   const orders = await Promise.all(
     rows.map(async (row: RowDataPacket) => {
       const [itemRows] = await pool.execute<RowDataPacket[]>(
-        `SELECT id, orderId, productId,
-                productName AS name,
-                price, quantity, lineTotal
-         FROM order_items WHERE orderId = ?`,
+        `SELECT oi.id, oi.orderId, oi.productId,
+                oi.productName AS name,
+                oi.price, oi.quantity, oi.lineTotal,
+                JSON_UNQUOTE(JSON_EXTRACT(p.images, '$[0]')) AS image
+         FROM order_items oi
+         LEFT JOIN products p ON oi.productId = p.id
+         WHERE oi.orderId = ?`,
         [row.id as number]
       );
       return {
@@ -129,6 +132,7 @@ export const getOrders = async (
           id: ir.id as number,
           productId: ir.productId as number | null,
           name: ir.name as string,
+          image: (ir.image as string | null) ?? null,
           price: parseFloat(ir.price as string),
           quantity: ir.quantity as number,
           lineTotal: parseFloat(ir.lineTotal as string),
@@ -153,10 +157,13 @@ export const getOrderById = async (userId: number, orderId: number): Promise<IOr
   }
 
   const [itemRows] = await pool.execute<RowDataPacket[]>(
-    `SELECT id, orderId, productId,
-            productName AS name,
-            price, quantity, lineTotal
-     FROM order_items WHERE orderId = ?`,
+    `SELECT oi.id, oi.orderId, oi.productId,
+            oi.productName AS name,
+            oi.price, oi.quantity, oi.lineTotal,
+            JSON_UNQUOTE(JSON_EXTRACT(p.images, '$[0]')) AS image
+     FROM order_items oi
+     LEFT JOIN products p ON oi.productId = p.id
+     WHERE oi.orderId = ?`,
     [orderId]
   );
 
@@ -167,6 +174,7 @@ export const getOrderById = async (userId: number, orderId: number): Promise<IOr
       id: row.id as number,
       productId: row.productId as number | null,
       name: row.name as string,
+      image: (row.image as string | null) ?? null,
       price: parseFloat(row.price as string),
       quantity: row.quantity as number,
       lineTotal: parseFloat(row.lineTotal as string),

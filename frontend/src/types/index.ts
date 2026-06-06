@@ -34,6 +34,7 @@ export interface ICategory {
 export interface ICartItem {
   productId: number;
   name: string;
+  image: string | null;
   price: number;
   quantity: number;
   lineTotal: number;
@@ -58,6 +59,7 @@ export interface IOrderItem {
   id: number;
   productId: number | null;
   name: string;
+  image: string | null;
   price: number;
   quantity: number;
   lineTotal: number;
